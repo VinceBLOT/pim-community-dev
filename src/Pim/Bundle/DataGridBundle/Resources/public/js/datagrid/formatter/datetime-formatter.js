@@ -1,6 +1,6 @@
 /* global define */
-define(['underscore', 'backgrid', 'pim/formatter/datetime'],
-function(_, Backgrid, DateTimeFormatter) {
+define(['underscore', 'backgrid'],
+function(_, Backgrid) {
     'use strict';
 
     /**

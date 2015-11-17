@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'pim/formatter/datetime', 'jquery-ui-full'],
-    function ($, datetimeFormatter) {
+    ['jquery', 'jquery-ui-full'],
+    function ($) {
         'use strict';
 
         var init = function (id) {
@@ -20,11 +20,11 @@ define(
             $field.addClass('hasPicker').wrap($('<span>', { 'class': 'hide' }));
 
             $field.on('change', function () {
-                $picker.val(datetimeFormatter.formatDate($field.val()));
+              //  $picker.val(datetimeFormatter.formatDate($field.val()));
             });
 
             if ($field.val() && $field.val().length) {
-                $picker.val(datetimeFormatter.formatDate($field.val()));
+               // $picker.val(datetimeFormatter.formatDate($field.val()));
             }
 
             $picker.datepicker({
@@ -39,11 +39,11 @@ define(
 
             $picker.keyup(function () {
                 var value = $picker.val();
-                if (datetimeFormatter.isDateValid(value)) {
-                    $field.val(datetimeFormatter.convertDateToBackendFormat(value));
-                } else {
-                    $field.val('');
-                }
+                //if (datetimeFormatter.isDateValid(value)) {
+                //    $field.val(datetimeFormatter.convertDateToBackendFormat(value));
+                //} else {
+                //    $field.val('');
+                //}
             });
         };
 
