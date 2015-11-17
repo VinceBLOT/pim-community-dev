@@ -1,6 +1,6 @@
 /* global define */
-define(['underscore', 'oro/datagrid/cell-formatter', 'pim/formatter/number'],
-function(_, CellFormatter, formatter) {
+define(['underscore', 'oro/datagrid/cell-formatter'],
+function(_, CellFormatter) {
     'use strict';
 
     /**
@@ -18,9 +18,6 @@ function(_, CellFormatter, formatter) {
 
     var getFormatter = function(style) {
         var functionName = 'format' + style.charAt(0).toUpperCase() + style.slice(1);
-        if (!_.isFunction(formatter[functionName])) {
-            throw new Error("Formatter doesn't support '" + style + "' number style");
-        }
         return formatter[functionName];
     };
 
@@ -34,20 +31,14 @@ function(_, CellFormatter, formatter) {
          * @inheritDoc
          */
         fromRaw: function (rawData) {
-            if (rawData === null || rawData === '') {
-                return '';
-            }
-            return this.formatter.apply(this, arguments);
+            return rawData;
         },
 
         /**
          * @inheritDoc
          */
         toRaw: function (formattedData) {
-            if (formattedData === null || formattedData === '') {
-                return null;
-            }
-            return formatter.unformat(formattedData);
+            return formattedData;
         }
     });
 
