@@ -27,46 +27,14 @@ function(_, Backgrid, DateTimeFormatter) {
          * @inheritDoc
          */
         fromRaw: function (rawData) {
-            if (rawData == null || rawData == '') {
-                return '';
-            }
-            // Call one of formatDate formatTime formatDateTime
-            return this._getFormatterFunction('format').call(DateTimeFormatter, rawData);
+            return rawData;
         },
 
         /**
          * @inheritDoc
          */
         toRaw: function (formattedData) {
-            if (formattedData == null || formattedData == '') {
-                return null;
-            }
-
-            // Call one of  convertDateToBackendFormat, convertTimeToBackendFormat, convertDateTimeToBackendFormat
-            return this._getFormatterFunction('convert', 'ToBackendFormat').call(DateTimeFormatter, formattedData);
-        },
-
-        /**
-         * @param {string} prefix
-         * @param {string} [suffix]
-         * @returns {Function}
-         * @private
-         */
-        _getFormatterFunction: function(prefix, suffix) {
-            suffix = suffix || '';
-
-            function capitaliseFirstLetter(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            var functionName = prefix + capitaliseFirstLetter(this.type) + suffix;
-            if (!DateTimeFormatter.hasOwnProperty(functionName)
-                || typeof DateTimeFormatter[functionName] != 'function'
-                ) {
-                throw new Error('Can\'t use formatter function with name ' + functionName);
-            }
-
-            return DateTimeFormatter[functionName];
+            return formattedData;
         }
     });
 
