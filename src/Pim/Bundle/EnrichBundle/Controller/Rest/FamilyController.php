@@ -3,7 +3,10 @@
 namespace Pim\Bundle\EnrichBundle\Controller\Rest;
 
 use Doctrine\ORM\EntityRepository;
+use Pim\Bundle\EnrichBundle\Entity\Repository\FamilySearchableRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -21,14 +24,22 @@ class FamilyController
     /** @var NormalizerInterface */
     protected $normalizer;
 
+    /** @var FamilySearchableRepository */
+    protected $familySearchableRepo;
+
     /**
-     * @param EntityRepository    $familyRepository
-     * @param NormalizerInterface $normalizer
+     * @param EntityRepository           $familyRepository
+     * @param NormalizerInterface        $normalizer
+     * @param FamilySearchableRepository $familySearchableRepo
      */
-    public function __construct(EntityRepository $familyRepository, NormalizerInterface $normalizer)
-    {
-        $this->familyRepository = $familyRepository;
-        $this->normalizer       = $normalizer;
+    public function __construct(
+        EntityRepository $familyRepository,
+        NormalizerInterface $normalizer,
+        FamilySearchableRepository $familySearchableRepo
+    ) {
+        $this->familyRepository     = $familyRepository;
+        $this->normalizer           = $normalizer;
+        $this->familySearchableRepo = $familySearchableRepo;
     }
 
     /**
@@ -36,9 +47,12 @@ class FamilyController
      *
      * @return JsonResponse
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $families = $this->familyRepository->findAll();
+        $query      = $request->query;
+        $search     = $query->get('search');
+
+        $families = $this->familySearchableRepo->findBySearch($search, ['limit' => 20]);
 
         $normalizedFamilies = [];
         foreach ($families as $family) {
@@ -46,5 +60,26 @@ class FamilyController
         }
 
         return new JsonResponse($normalizedFamilies);
+    }
+
+    /**
+     * Get a single family
+     *
+     * @param int $identifier
+     *
+     * @return JsonResponse
+     */
+    public function getAction($identifier)
+    {
+        $family = $this->familyRepository->findOneByCode($identifier);
+
+        if (!$family) {
+            throw new NotFoundHttpException(sprintf('Family with code "%s" not found', $identifier));
+        }
+
+        $normalizedFamily = [];
+        return new JsonResponse(
+            $normalizedFamily[$family->getCode()] = $this->normalizer->normalize($family, 'json')
+        );
     }
 }

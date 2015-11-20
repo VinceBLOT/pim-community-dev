@@ -16,10 +16,11 @@ define(
         'pim/product-manager',
         'text!pim/template/product/meta/change-family-modal',
         'pim/user-context',
+        'pim/i18n',
         'backbone/bootstrap-modal',
         'jquery.select2'
     ],
-    function (_, Backbone, BaseForm, FetcherRegistry, ProductManager, modalTemplate, UserContext) {
+    function (_, Backbone, BaseForm, FetcherRegistry, ProductManager, modalTemplate, UserContext, i18n) {
         var FormView = BaseForm.extend({
             tagName: 'i',
             className: 'icon-pencil change-family',
@@ -33,35 +34,65 @@ define(
                 return BaseForm.prototype.render.apply(this, arguments);
             },
             showModal: function () {
-                FetcherRegistry.getFetcher('family').fetchAll().done(function (families) {
-                    var familyModal = new Backbone.BootstrapModal({
-                        allowCancel: true,
-                        title: _.__('pim_enrich.form.product.change_family.modal.title'),
-                        content: this.modalTemplate({
-                            families: families,
-                            product:  this.getFormData(),
-                            locale:   UserContext.get('catalogLocale')
-                        })
-                    });
+                var familyModal = new Backbone.BootstrapModal({
+                    allowCancel: true,
+                    title: _.__('pim_enrich.form.product.change_family.modal.title'),
+                    content: this.modalTemplate({
+                        product: this.getFormData()
+                    })
+                });
 
-                    familyModal.on('ok', function () {
-                        var selectedFamily = familyModal.$('select').select2('val') || null;
+                familyModal.on('ok', function () {
+                    var selectedFamily = familyModal.$('.family-select2').select2('val') || null;
 
-                        this.getFormModel().set('family', selectedFamily);
-                        ProductManager.generateMissing(this.getFormData()).then(function (product) {
-                            this.getRoot().trigger('pim_enrich:form:change-family:before');
+                    this.getFormModel().set('family', selectedFamily);
+                    ProductManager.generateMissing(this.getFormData()).then(function (product) {
+                        this.getRoot().trigger('pim_enrich:form:change-family:before');
 
-                            this.setData(product);
+                        this.setData(product);
 
-                            this.getRoot().trigger('pim_enrich:form:change-family:after');
-                            familyModal.close();
-                        }.bind(this));
+                        this.getRoot().trigger('pim_enrich:form:change-family:after');
+                        familyModal.close();
                     }.bind(this));
-
-                    familyModal.open();
-                    familyModal.$('select').select2({ allowClear: true });
-                    familyModal.$('.modal-body').css({'line-height': '25px', 'height': 130});
                 }.bind(this));
+
+                familyModal.open();
+                familyModal.$('.family-select2').select2('destroy').select2({
+                    ajax: {
+                        url: Routing.generate('pim_enrich_family_rest_index'),
+                        quietMillis: 250,
+                        cache: true,
+                        data: function(term, page) {
+                            return {
+                                search: term,
+                                options: {
+                                    limit: 20,
+                                    page: page
+                                }
+                            };
+                        },
+                        results: function(families) {
+                            var data = {
+                                more: 20 === _.keys(families).length,
+                                results: []
+                            };
+                            _.each(families, function (value, key) {
+                                data.results.push({id: key, text: i18n.getLabel(value.label, UserContext.get('catalogLocale'), value.code)});
+                            });
+
+                            return data;
+                        }
+                    },
+                    initSelection: function (element, callback) {
+                        var code = $(element).val();
+                        if ('' !== code) {
+                            FetcherRegistry.getFetcher('family').fetch(this.getFormData().family).then(function (family) {
+                                callback({id: family.code, text: i18n.getLabel(family.label, UserContext.get('catalogLocale'), family.code)})
+                            });
+                        }
+                    }
+                });
+                familyModal.$('.modal-body').css({'line-height': '25px', 'height': 130});
             }
         });
 

@@ -233,9 +233,12 @@ class ProductController
 
         $attribute = $this->findAttributeOr404($attributeId);
 
+
         if (!$product->isAttributeRemovable($attribute)) {
             throw new BadRequestHttpException();
         }
+
+        var_dump($attribute->getId());
 
         $this->productBuilder->removeAttributeFromProduct($product, $attribute);
         $this->productSaver->save($product, ['recalculate' => false, 'schedule' => false]);

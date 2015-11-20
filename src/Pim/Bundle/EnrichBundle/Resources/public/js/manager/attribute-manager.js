@@ -62,8 +62,11 @@ define([
              * @return {boolean}
              */
             isOptional: function (attribute, product, families) {
-                return 'pim_catalog_identifier' !== attribute.type &&
-                    (!product.family ? true : !_.contains(families[product.family].attributes, attribute.code));
+                var test1 = true;
+                if (typeof families[product.family] !== 'undefined') {
+                    test1 = (!product.family ? true : !_.contains(families[product.family].attributes, attribute.code));
+                }
+                return 'pim_catalog_identifier' !== attribute.type && test1;
             },
 
             /**
