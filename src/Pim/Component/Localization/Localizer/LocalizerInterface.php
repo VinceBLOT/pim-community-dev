@@ -16,7 +16,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 interface LocalizerInterface
 {
-    const DEFAULT_DATE_FORMAT = 'Y-m-d';
+    const DEFAULT_DATE_FORMAT = 'yyyy-M-d';
 
     const DEFAULT_DECIMAL_SEPARATOR = '.';
 
