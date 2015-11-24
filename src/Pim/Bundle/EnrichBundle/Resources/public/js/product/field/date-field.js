@@ -12,12 +12,14 @@ define(
         'pim/field',
         'underscore',
         'text!pim/template/product/field/date',
+        'pim/date-context',
         'bootstrap.bootstrapsdatepicker'
     ],
     function (
         Field,
         _,
-        fieldTemplate
+        fieldTemplate,
+        DateContext
     ) {
         return Field.extend({
             fieldTemplate: _.template(fieldTemplate),
@@ -31,6 +33,9 @@ define(
                 return this.fieldTemplate(context);
             },
             postRender: function () {
+                this.datepickerOptions.format   = DateContext.get('format').toLowerCase();
+                this.datepickerOptions.language = DateContext.get('language');
+
                 this.$('.datepicker-field').datepicker(this.datepickerOptions);
             },
             updateModel: function () {
