@@ -89,7 +89,6 @@ class ProductAssociationProcessor extends AbstractProcessor
             $convertedItem = $this->filterIdenticalData($product, $convertedItem);
 
             if (empty($convertedItem)) {
-                $this->detachProduct($product);
                 $this->stepExecution->incrementSummaryInfo('product_skipped_no_diff');
 
                 return null;
