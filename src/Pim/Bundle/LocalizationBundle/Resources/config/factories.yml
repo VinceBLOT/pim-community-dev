@@ -1,0 +1,12 @@
+parameters:
+    pim_localization.factory.date.class: Pim\Component\Localization\Factory\DateFactory
+
+services:
+    pim_localization.factory.date:
+        class: %pim_localization.factory.date.class%
+        arguments:
+            -
+                en: 'MM/DD/yyyy'
+                en_US: 'MM/DD/yyyy'
+                fr: 'dd/MM/yyyy'
+                fr_FR: 'dd/MM/yyyy'

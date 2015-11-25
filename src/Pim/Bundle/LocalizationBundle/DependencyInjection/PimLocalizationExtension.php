@@ -38,6 +38,7 @@ class PimLocalizationExtension extends Extension
         $loader->load('controllers.yml');
         $loader->load('converters.yml');
         $loader->load('denormalizers.yml');
+        $loader->load('factories.yml');
         $loader->load('localizers.yml');
         $loader->load('normalizers.yml');
         $loader->load('providers.yml');
