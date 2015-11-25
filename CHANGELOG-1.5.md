@@ -61,3 +61,4 @@
 - Change constructor of `Pim\Bundle\DataGridBundle\Extension\MassAction\Util\ProductFieldsBuilder` to inject ProductRepositoryInterface an AttributeRepositoryInterface
 - Added method `getAttributeCodesByGroup` to the `Pim\Bundle\CatalogBundle\Repository\AttributeRepositoryInterface`
 - Changed constructor of `Pim\Bundle\TransformBundle\Normalizer\Structured\AttributeGroupNormalizer`, made AttributeRepository mandatory
+- Remove deprecated method scheduleForChannel from `Pim\Bundle\CatalogBundle\Manager\CompletenessManager`
